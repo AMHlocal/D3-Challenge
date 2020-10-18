@@ -181,4 +181,45 @@ d3.csv("./assets/data/data.csv").then(riskData => {
     // updateToolTip function (above csv import - need to make)
     var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
-});
+    // x axis labels event listener
+    labelsGroupX.selectAll("text")
+        .on("click", function() {
+            //get value of selection
+            var value = d3.select(this).attr("value");
+            if (value !== chosenXAxis) {
+                // replaces chosenXAXis with value
+                chosenXAxis = value;
+
+                //make these functions above the import
+                xLinearScale = xScale(riskData, chosenXAxis);
+
+                //update x axis with transition
+                xAxis = renderCircles(xLinearScale, xAxis);
+
+                // updates circles with new x values
+                circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
+
+                // updates tooltips with new info
+                circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+
+                // changes classes to change bold text
+                if (chosenXAxis === "num_albums") {
+                    albumsLabel
+                        .classed("active", true)
+                        .classed("inactive", false);
+                    hairLengthLabel
+                        .classed("active", false)
+                        .classed("inactive", true);
+                }
+                else {
+                    albumsLabel
+                        .classed("active", false)
+                        .classed("inactive", true);
+                    hairLengthLabel
+                        .classed("active", true)
+                        .classed("inactive", false);
+                    }
+            }
+        });
+
+}).catch(error => console.log(error));
